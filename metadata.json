@@ -1,0 +1,5 @@
+{
+  "name": "Slowed & Reverb Studio Pro",
+  "description": "A professional client-side audio processing studio for creating slowed, reverb, and pitch-shifted music with real-time visualization and high-quality WAV export.",
+  "requestFramePermissions": []
+}
