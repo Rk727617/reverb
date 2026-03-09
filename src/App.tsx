@@ -6,7 +6,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Play, Pause, Upload, Download, RotateCcw, 
-  Volume2, Music, Sliders, Zap, Waves
+  Volume2, Music, Sliders, Zap, Waves, Info, Shield, Mail, Home
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AudioEngine } from './services/audioEngine';
@@ -163,186 +163,270 @@ export default function App() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
-      {/* Header */}
-      <header className="flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-brand-purple rounded-2xl shadow-lg shadow-brand-purple/20">
-            <Waves className="w-8 h-8 text-white" />
+    <div className="min-h-screen">
+      {/* Navigation Bar */}
+      <nav className="sticky top-0 z-50 glass border-b-0 rounded-none px-4 md:px-8 py-4 mb-8">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Waves className="w-6 h-6 text-brand-purple" />
+            <span className="font-bold text-lg hidden sm:inline">Studio Pro</span>
           </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              Slowed & Reverb <span className="text-brand-purple">Studio Pro</span>
-            </h1>
-            <p className="text-slate-400 text-sm">Professional Audio Processing</p>
+          <div className="flex items-center gap-4 md:gap-8">
+            <a href="#home" className="text-sm font-medium hover:text-brand-purple transition-colors flex items-center gap-1">
+              <Home className="w-4 h-4" /> <span className="hidden xs:inline">Home</span>
+            </a>
+            <a href="#about" className="text-sm font-medium hover:text-brand-purple transition-colors flex items-center gap-1">
+              <Info className="w-4 h-4" /> <span className="hidden xs:inline">About</span>
+            </a>
+            <a href="#privacy" className="text-sm font-medium hover:text-brand-purple transition-colors flex items-center gap-1">
+              <Shield className="w-4 h-4" /> <span className="hidden xs:inline">Privacy</span>
+            </a>
+            <a href="#contact" className="text-sm font-medium hover:text-brand-purple transition-colors flex items-center gap-1">
+              <Mail className="w-4 h-4" /> <span className="hidden xs:inline">Contact</span>
+            </a>
           </div>
         </div>
-        
-        <button 
-          onClick={() => fileInputRef.current?.click()}
-          className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all glass group"
-        >
-          <Upload className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
-          <span>Upload Audio</span>
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleFileUpload} 
-            className="hidden" 
-            accept="audio/*"
-          />
-        </button>
-      </header>
+      </nav>
 
-      {/* Main Content */}
-      <main className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: Visualizer & Player */}
-        <div className="lg:col-span-7 space-y-6">
-          <div className="glass rounded-3xl p-6 aspect-video relative overflow-hidden flex flex-col justify-between">
-            <canvas 
-              ref={canvasRef} 
-              className="absolute inset-0 w-full h-full opacity-40 pointer-events-none"
-              width={800}
-              height={400}
-            />
-            
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-widest text-brand-purple font-bold">Now Playing</span>
-                  <h2 className="text-xl font-semibold truncate max-w-[250px]">
-                    {state.fileName || "No file selected"}
-                  </h2>
-                </div>
-                <Music className="w-6 h-6 text-white/20" />
+      <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-24">
+        {/* Home Section */}
+        <section id="home" className="space-y-8 scroll-mt-24">
+          {/* Header */}
+          <header className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-brand-purple rounded-2xl shadow-lg shadow-brand-purple/20">
+                <Waves className="w-8 h-8 text-white" />
               </div>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+                  Slowed & Reverb <span className="text-brand-purple">Studio Pro</span>
+                </h1>
+                <p className="text-slate-400 text-sm">Professional Audio Processing</p>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all glass group"
+            >
+              <Upload className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+              <span>Upload Audio</span>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileUpload} 
+                className="hidden" 
+                accept="audio/*"
+              />
+            </button>
+          </header>
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <span className="text-xs font-mono w-10">{formatTime(state.currentTime)}</span>
-                  <input 
-                    type="range" 
-                    className="flex-1"
-                    min="0"
-                    max="100"
-                    value={state.duration ? (state.currentTime / state.duration) * 100 : 0}
-                    onChange={handleSeek}
-                  />
-                  <span className="text-xs font-mono w-10">{formatTime(state.duration)}</span>
-                </div>
+          {/* Main Content */}
+          <main className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Left Column: Visualizer & Player */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="glass rounded-3xl p-6 aspect-video relative overflow-hidden flex flex-col justify-between">
+                <canvas 
+                  ref={canvasRef} 
+                  className="absolute inset-0 w-full h-full opacity-40 pointer-events-none"
+                  width={800}
+                  height={400}
+                />
+                
+                <div className="relative z-10 flex flex-col h-full justify-between">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <span className="text-xs font-mono uppercase tracking-widest text-brand-purple font-bold">Now Playing</span>
+                      <h2 className="text-xl font-semibold truncate max-w-[250px]">
+                        {state.fileName || "No file selected"}
+                      </h2>
+                    </div>
+                    <Music className="w-6 h-6 text-white/20" />
+                  </div>
 
-                <div className="flex justify-center items-center gap-8">
-                  <button className="p-2 text-white/40 hover:text-white transition-colors">
-                    <RotateCcw className="w-6 h-6" />
-                  </button>
-                  <button 
-                    onClick={togglePlay}
-                    disabled={!state.fileName}
-                    className="w-16 h-16 flex items-center justify-center bg-brand-purple rounded-full shadow-xl shadow-brand-purple/40 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {state.isPlaying ? <Pause className="w-8 h-8 fill-white" /> : <Play className="w-8 h-8 fill-white ml-1" />}
-                  </button>
-                  <div className="flex items-center gap-2 group">
-                    <Volume2 className="w-5 h-5 text-white/40 group-hover:text-white" />
-                    <input 
-                      type="range" 
-                      className="w-20"
-                      min="0"
-                      max="1"
-                      step="0.01"
-                      value={state.volume}
-                      onChange={(e) => updateEffect('volume', parseFloat(e.target.value))}
-                    />
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs font-mono w-10">{formatTime(state.currentTime)}</span>
+                      <input 
+                        type="range" 
+                        className="flex-1"
+                        min="0"
+                        max="100"
+                        value={state.duration ? (state.currentTime / state.duration) * 100 : 0}
+                        onChange={handleSeek}
+                      />
+                      <span className="text-xs font-mono w-10">{formatTime(state.duration)}</span>
+                    </div>
+
+                    <div className="flex justify-center items-center gap-8">
+                      <button className="p-2 text-white/40 hover:text-white transition-colors">
+                        <RotateCcw className="w-6 h-6" />
+                      </button>
+                      <button 
+                        onClick={togglePlay}
+                        disabled={!state.fileName}
+                        className="w-16 h-16 flex items-center justify-center bg-brand-purple rounded-full shadow-xl shadow-brand-purple/40 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {state.isPlaying ? <Pause className="w-8 h-8 fill-white" /> : <Play className="w-8 h-8 fill-white ml-1" />}
+                      </button>
+                      <div className="flex items-center gap-2 group">
+                        <Volume2 className="w-5 h-5 text-white/40 group-hover:text-white" />
+                        <input 
+                          type="range" 
+                          className="w-20"
+                          min="0"
+                          max="1"
+                          step="0.01"
+                          value={state.volume}
+                          onChange={(e) => updateEffect('volume', parseFloat(e.target.value))}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Presets */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-slate-400">
-              <Zap className="w-4 h-4" />
-              <span className="text-sm font-semibold uppercase tracking-wider">Quick Presets</span>
+              {/* Presets */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-slate-400">
+                  <Zap className="w-4 h-4" />
+                  <span className="text-sm font-semibold uppercase tracking-wider">Quick Presets</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {PRESETS.map((preset) => (
+                    <button
+                      key={preset.name}
+                      onClick={() => applyPreset(preset)}
+                      className="px-4 py-3 rounded-xl glass hover:bg-brand-purple/20 hover:border-brand-purple/50 transition-all text-sm font-medium"
+                    >
+                      {preset.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {PRESETS.map((preset) => (
-                <button
-                  key={preset.name}
-                  onClick={() => applyPreset(preset)}
-                  className="px-4 py-3 rounded-xl glass hover:bg-brand-purple/20 hover:border-brand-purple/50 transition-all text-sm font-medium"
+
+            {/* Right Column: Controls */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="glass rounded-3xl p-8 space-y-8">
+                <div className="flex items-center gap-2 border-b border-white/10 pb-4">
+                  <Sliders className="w-5 h-5 text-brand-purple" />
+                  <h3 className="font-bold text-lg">Effect Controls</h3>
+                </div>
+
+                <div className="space-y-6">
+                  <ControlSlider 
+                    label="Playback Speed" 
+                    value={state.speed} 
+                    min={0.5} 
+                    max={1.5} 
+                    step={0.01}
+                    unit="x"
+                    onChange={(v) => updateEffect('speed', v)}
+                  />
+                  <ControlSlider 
+                    label="Reverb Intensity" 
+                    value={state.reverb} 
+                    min={0} 
+                    max={1} 
+                    step={0.01}
+                    unit="%"
+                    onChange={(v) => updateEffect('reverb', v)}
+                  />
+                  <ControlSlider 
+                    label="Bass Boost" 
+                    value={state.bass} 
+                    min={0} 
+                    max={20} 
+                    step={0.5}
+                    unit="dB"
+                    onChange={(v) => updateEffect('bass', v)}
+                  />
+                </div>
+
+                <button 
+                  onClick={handleExport}
+                  disabled={!state.fileName || isExporting}
+                  className="w-full py-4 bg-white text-brand-dark font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-brand-purple hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl"
                 >
-                  {preset.name}
+                  {isExporting ? (
+                    <div className="w-5 h-5 border-2 border-brand-dark border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Download className="w-5 h-5" />
+                  )}
+                  {isExporting ? "Processing..." : "Export High Quality WAV"}
                 </button>
-              ))}
+              </div>
+
+              <div className="glass rounded-2xl p-4 text-center">
+                <p className="text-xs text-slate-500">
+                  All processing happens locally in your browser. No data is sent to any server.
+                </p>
+              </div>
             </div>
+          </main>
+        </section>
+
+        {/* About Section */}
+        <section id="about" className="space-y-6 scroll-mt-24">
+          <div className="flex items-center gap-2 text-brand-purple">
+            <Info className="w-6 h-6" />
+            <h2 className="text-2xl font-bold">About Studio Pro</h2>
           </div>
-        </div>
-
-        {/* Right Column: Controls */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="glass rounded-3xl p-8 space-y-8">
-            <div className="flex items-center gap-2 border-b border-white/10 pb-4">
-              <Sliders className="w-5 h-5 text-brand-purple" />
-              <h3 className="font-bold text-lg">Effect Controls</h3>
-            </div>
-
-            <div className="space-y-6">
-              <ControlSlider 
-                label="Playback Speed" 
-                value={state.speed} 
-                min={0.5} 
-                max={1.5} 
-                step={0.01}
-                unit="x"
-                onChange={(v) => updateEffect('speed', v)}
-              />
-              <ControlSlider 
-                label="Reverb Intensity" 
-                value={state.reverb} 
-                min={0} 
-                max={1} 
-                step={0.01}
-                unit="%"
-                onChange={(v) => updateEffect('reverb', v)}
-              />
-              <ControlSlider 
-                label="Bass Boost" 
-                value={state.bass} 
-                min={0} 
-                max={20} 
-                step={0.5}
-                unit="dB"
-                onChange={(v) => updateEffect('bass', v)}
-              />
-            </div>
-
-            <button 
-              onClick={handleExport}
-              disabled={!state.fileName || isExporting}
-              className="w-full py-4 bg-white text-brand-dark font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-brand-purple hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl"
-            >
-              {isExporting ? (
-                <div className="w-5 h-5 border-2 border-brand-dark border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Download className="w-5 h-5" />
-              )}
-              {isExporting ? "Processing..." : "Export High Quality WAV"}
-            </button>
-          </div>
-
-          <div className="glass rounded-2xl p-4 text-center">
-            <p className="text-xs text-slate-500">
-              All processing happens locally in your browser. No data is sent to any server.
+          <div className="glass rounded-3xl p-8 text-slate-300 leading-relaxed">
+            <p>
+              Slowed & Reverb Studio Pro is a professional-grade online audio workstation designed for music enthusiasts and creators. 
+              Our platform allows you to effortlessly upload your favorite songs and apply high-quality "Slowed + Reverb" effects in real-time.
+            </p>
+            <p className="mt-4">
+              Using the advanced Web Audio API, we provide precise control over playback speed, reverb intensity, and bass boost, 
+              enabling you to create that perfect atmospheric, chill vibe directly in your browser. No software installation required.
             </p>
           </div>
-        </div>
-      </main>
+        </section>
 
-      {/* Footer */}
-      <footer className="text-center py-8 text-slate-500 text-sm">
-        <p>&copy; 2024 Slowed & Reverb Studio Pro. Built with Web Audio API.</p>
-      </footer>
+        {/* Privacy Policy Section */}
+        <section id="privacy" className="space-y-6 scroll-mt-24">
+          <div className="flex items-center gap-2 text-brand-purple">
+            <Shield className="w-6 h-6" />
+            <h2 className="text-2xl font-bold">Privacy Policy</h2>
+          </div>
+          <div className="glass rounded-3xl p-8 text-slate-300 leading-relaxed">
+            <p>
+              Your privacy is our priority. Slowed & Reverb Studio Pro is a fully client-side application. 
+              This means all audio processing happens locally on your device. We do not upload, store, or collect your personal audio files or any other personal user data.
+            </p>
+            <p className="mt-4">
+              Please note that this website may display advertisements from third-party advertising networks. 
+              These networks may use cookies to serve ads based on your interests.
+            </p>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="space-y-6 scroll-mt-24">
+          <div className="flex items-center gap-2 text-brand-purple">
+            <Mail className="w-6 h-6" />
+            <h2 className="text-2xl font-bold">Contact Us</h2>
+          </div>
+          <div className="glass rounded-3xl p-8 text-center space-y-4">
+            <p className="text-slate-300">
+              Have questions or feedback? We'd love to hear from you.
+            </p>
+            <a 
+              href="mailto:rameshkamble7276@gmail.com" 
+              className="inline-block px-8 py-3 bg-brand-purple text-white font-bold rounded-xl hover:scale-105 transition-all shadow-lg shadow-brand-purple/20"
+            >
+              rameshkamble7276@gmail.com
+            </a>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="text-center py-8 text-slate-500 text-sm border-t border-white/5">
+          <p>&copy; 2024 Slowed & Reverb Studio Pro. Built with Web Audio API.</p>
+        </footer>
+      </div>
     </div>
   );
 }
